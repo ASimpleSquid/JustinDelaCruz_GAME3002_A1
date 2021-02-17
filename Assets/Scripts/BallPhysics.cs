@@ -1,5 +1,6 @@
 using UnityEngine.Assertions;
 using UnityEngine;
+using TMPro;
 
 public class BallPhysics : MonoBehaviour
 {
@@ -20,6 +21,10 @@ public class BallPhysics : MonoBehaviour
     private float m_fDistanceToTarget = 0f;
 
     private Vector3 vDebugHeading;
+
+    public TMP_Text scoreValuetxt;
+
+    public static int score = 1;
 
     Vector3 CalculateVelocity(Vector3 target, Vector3 origin, float time)
     {
@@ -95,10 +100,17 @@ public class BallPhysics : MonoBehaviour
         {
             m_vTargetPos.y += m_fInputDeltaVal;
         }
-
         if (Input.GetKey(KeyCode.F))
         {
             m_vTargetPos.y -= m_fInputDeltaVal;
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            transform.position = GameObject.Find("BallSpawn").transform.position;
+            this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            this.gameObject.GetComponent<Rigidbody>().rotation = Quaternion.identity;
+            scoreValuetxt.text = "Goals " + score;
+            score = 0;
         }
     }
     private void CreateTargetDisplay()
@@ -141,5 +153,21 @@ public class BallPhysics : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position + vDebugHeading, transform.position);
+    }
+
+   private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Goals")
+        {
+            Debug.Log("goal");
+            scoreValuetxt.text = "Goals "+score.ToString();
+ 
+            score++;
+
+            transform.position = GameObject.Find("BallSpawn").transform.position;
+            this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            this.gameObject.GetComponent<Rigidbody>().rotation = Quaternion.identity;
+
+        }
     }
 }
