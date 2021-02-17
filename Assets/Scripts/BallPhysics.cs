@@ -9,6 +9,8 @@ public class BallPhysics : MonoBehaviour
     private Vector3 m_vInitialVel;
     [SerializeField]
     private bool m_bDebugKickBall = false;
+    [SerializeField]
+    private float m_fInputDeltaVal = 0.001f;
 
     private Rigidbody m_rb = null;
     private GameObject m_TargetDisplay = null;
@@ -18,6 +20,23 @@ public class BallPhysics : MonoBehaviour
     private float m_fDistanceToTarget = 0f;
 
     private Vector3 vDebugHeading;
+
+    Vector3 CalculateVelocity(Vector3 target, Vector3 origin, float time)
+    {
+        //define the distance x and y first
+        Vector3 distance = target - origin;
+        Vector3 distanceXZ = distance;
+        distanceXZ.y = 0f;
+        //create a float the represent the distance
+        float Sy = distance.y;
+        float Sxz = distanceXZ.magnitude;
+        float Vxz = Sxz / time;
+        float Vy = Sy / time + .5f * Mathf.Abs(Physics.gravity.y) * time;
+        Vector3 result = distanceXZ.normalized;
+        result *= Vxz;
+        result.y = Vy;
+        return result;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -41,16 +60,55 @@ public class BallPhysics : MonoBehaviour
         if (m_bDebugKickBall && m_bIsGrounded)
         {
             m_bDebugKickBall = false;
-            OnKickBall();
+            //OnKickBall();
+            Vector3 Vo = CalculateVelocity(m_vTargetPos, m_rb.position, 1f);
+            transform.rotation = Quaternion.LookRotation(Vo);
+            m_rb.velocity = Vo;
+        }
+        HandleUserInput();
+    }
+    private void HandleUserInput()
+    {
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            //m_projectile.
+            m_bDebugKickBall = true;
+
+        }
+        if (Input.GetKey(KeyCode.W))
+        {
+            m_vTargetPos.z += m_fInputDeltaVal;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            m_vTargetPos.x -= m_fInputDeltaVal;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            m_vTargetPos.z -= m_fInputDeltaVal;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            m_vTargetPos.x += m_fInputDeltaVal;
+        }
+        if (Input.GetKey(KeyCode.R))
+        {
+            m_vTargetPos.y += m_fInputDeltaVal;
+        }
+
+        if (Input.GetKey(KeyCode.F))
+        {
+            m_vTargetPos.y -= m_fInputDeltaVal;
         }
     }
-
     private void CreateTargetDisplay()
     {
-        m_TargetDisplay = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        m_TargetDisplay.transform.position = Vector3.zero;
-        m_TargetDisplay.transform.localScale = new Vector3(1.0f, 0.1f, 1.0f);
-        m_TargetDisplay.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        m_TargetDisplay = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        m_TargetDisplay.transform.position = new Vector3(1.0f, 1.0f, 5.0f);
+        m_TargetDisplay.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+        m_TargetDisplay.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        m_vTargetPos.y = 0.3f;
+        m_vTargetPos.z = 10;
 
         m_TargetDisplay.GetComponent<Renderer>().material.color = Color.red;
         m_TargetDisplay.GetComponent<Collider>().enabled = false;
