@@ -1,5 +1,6 @@
 using UnityEngine.Assertions;
 using UnityEngine;
+// needed to update the score tracking
 using TMPro;
 
 public class BallPhysics : MonoBehaviour
@@ -24,6 +25,7 @@ public class BallPhysics : MonoBehaviour
 
     public TMP_Text scoreValuetxt;
 
+    // Not 0 so a goal won't state 0 when a goal is obtained.
     public static int score = 1;
 
     Vector3 CalculateVelocity(Vector3 target, Vector3 origin, float time)
@@ -74,12 +76,14 @@ public class BallPhysics : MonoBehaviour
     }
     private void HandleUserInput()
     {
+        // Kicks the ball
         if (Input.GetKeyUp(KeyCode.Space))
         {
             //m_projectile.
             m_bDebugKickBall = true;
 
         }
+        // Moves the target for the ball to be kicked to
         if (Input.GetKey(KeyCode.W))
         {
             m_vTargetPos.z += m_fInputDeltaVal;
@@ -106,6 +110,7 @@ public class BallPhysics : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.Q))
         {
+            //When Q is pushed, Goals reset to 0 to encourage the player to go for a high score of continuous goals
             transform.position = GameObject.Find("BallSpawn").transform.position;
             this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             this.gameObject.GetComponent<Rigidbody>().rotation = Quaternion.identity;
@@ -119,6 +124,8 @@ public class BallPhysics : MonoBehaviour
         m_TargetDisplay.transform.position = new Vector3(1.0f, 1.0f, 5.0f);
         m_TargetDisplay.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
         m_TargetDisplay.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+
+        // Target Position Set by Net
         m_vTargetPos.y = 0.3f;
         m_vTargetPos.z = 12;
 
@@ -163,7 +170,7 @@ public class BallPhysics : MonoBehaviour
             scoreValuetxt.text = "Goals: "+score.ToString();
  
             score++;
-
+            // Ensures Score increasing and Ball respawning upon goal
             transform.position = GameObject.Find("BallSpawn").transform.position;
             this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             this.gameObject.GetComponent<Rigidbody>().rotation = Quaternion.identity;
