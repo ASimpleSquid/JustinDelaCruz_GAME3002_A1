@@ -109,8 +109,8 @@ public class BallPhysics : MonoBehaviour
             transform.position = GameObject.Find("BallSpawn").transform.position;
             this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             this.gameObject.GetComponent<Rigidbody>().rotation = Quaternion.identity;
-            scoreValuetxt.text = "Goals " + score;
-            score = 0;
+            scoreValuetxt.text = "Goals: ";
+            score = 1;
         }
     }
     private void CreateTargetDisplay()
@@ -160,7 +160,7 @@ public class BallPhysics : MonoBehaviour
         if (other.gameObject.tag == "Goals")
         {
             Debug.Log("goal");
-            scoreValuetxt.text = "Goals "+score.ToString();
+            scoreValuetxt.text = "Goals: "+score.ToString();
  
             score++;
 
