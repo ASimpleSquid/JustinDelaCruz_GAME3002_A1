@@ -11,7 +11,7 @@ public class BallPhysics : MonoBehaviour
     [SerializeField]
     private bool m_bDebugKickBall = false;
     [SerializeField]
-    private float m_fInputDeltaVal = 0.001f;
+    private float m_fInputDeltaVal = 0.05f;
 
     private Rigidbody m_rb = null;
     private GameObject m_TargetDisplay = null;
@@ -120,7 +120,7 @@ public class BallPhysics : MonoBehaviour
         m_TargetDisplay.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
         m_TargetDisplay.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         m_vTargetPos.y = 0.3f;
-        m_vTargetPos.z = 10;
+        m_vTargetPos.z = 12;
 
         m_TargetDisplay.GetComponent<Renderer>().material.color = Color.red;
         m_TargetDisplay.GetComponent<Collider>().enabled = false;
